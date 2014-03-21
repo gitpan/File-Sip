@@ -1,0 +1,6 @@
+0.001     2014-03-21 10:11:26CET+0100 Europe/Paris
+
+    * GitHub #1: reference File::Slurp::Tiny instead of File::Slurp
+      (Alexis Sukrieh)
+    * Initital version of File::Scan with test (slurp_line)
+      (Alexis Sukrieh, Bin Shu)
