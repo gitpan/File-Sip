@@ -127,7 +127,7 @@ File::Sip - file parser intended for big files that don't fit into main memory.
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 DESCRIPTION
 

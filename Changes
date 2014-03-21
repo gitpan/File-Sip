@@ -1,3 +1,7 @@
+0.002     2014-03-21 10:18:54CET+0100 Europe/Paris
+
+    * Provide a README.pod with Dist::Zilla::Plugin::ReadmeAnyFromPod
+
 0.001     2014-03-21 10:11:26CET+0100 Europe/Paris
 
     * GitHub #1: reference File::Slurp::Tiny instead of File::Slurp

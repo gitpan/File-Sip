@@ -1,7 +1,7 @@
 
 
 This archive contains the distribution File-Sip,
-version 0.001:
+version 0.002:
 
   file parser intended for big files that don't fit into main memory.
 
