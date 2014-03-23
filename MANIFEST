@@ -12,5 +12,6 @@ t/author-critic.t
 t/data/somefile.txt
 t/release-pod-coverage.t
 t/release-unused-vars.t
+xt/memory_usage.pl
 xt/perlcritic.rc
 xt/perltidy.rc

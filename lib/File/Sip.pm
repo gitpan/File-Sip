@@ -39,11 +39,11 @@ sub read_line {
 
     $line_number //= $self->_read_line_position;
     my $fh         = $self->_fh;
-    my $line_index = $self->index->{$line_number};
+    my $line_index = $self->index->[$line_number];
     return if !defined $line_index;
 
     my $previous_line_index =
-      ( $line_number == 0 ) ? 0 : $self->index->{ $line_number - 1 };
+      ( $line_number == 0 ) ? 0 : $self->index->[ $line_number - 1 ];
 
     my $line;
     seek( $fh, $previous_line_index, 0 );
@@ -87,7 +87,7 @@ has index => (
 
 sub _build_index {
     my ($self) = @_;
-    my $index;
+    my $index = [];
 
     my ($blocksize) = @{ $self->_stat }[11];
     $blocksize ||= 8192;
@@ -105,7 +105,7 @@ sub _build_index {
         for my $i ( 0 .. $count ) {
             my $char = substr $buffer, $i, 1;
             if ( $char =~ /$line_sep/ ) {
-                $index->{ $line_number++ } = $offset + $i + 1;
+                $index->[ $line_number++ ] = $offset + $i + 1;
             }
         }
         $offset += $count;
@@ -127,7 +127,7 @@ File::Sip - file parser intended for big files that don't fit into main memory.
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 DESCRIPTION
 
@@ -140,9 +140,8 @@ environment, brute force isn't an option.
 An index of all the lines in the file is built in order to be able to access
 their starting position depending on their line number.
 
-The memory used is then limited to the size of the index (HashRef of line
-numbers / position values) plus the size of the line that is read (until the
-line separator character is reached).
+The memory used is then limited to the size of the index plus the size of the
+line that is read (until the line separator character is reached).
 
 It also provides a way to nicely iterate over all the lines of the file, using
 only the amount of memory needed to store one line at a time, not the whole file.
@@ -162,13 +161,13 @@ C</(\015\012|\015|\012)/>.
 
 Optional, flag to tell if the file is utf8-encoded, default is true. 
 
-If true, the line returned by C<slurp_line> will be decoded.
+If true, the line returned by C<read_line> will be decoded.
 
 =head2 index
 
 Index that contains positions of all lines of the file, usage:
 
-    $self->index->{ $line_number } = $seek_position;
+    $sip->index->[ $line_number ] = $seek_position;
 
 =head1 METHODS
 
@@ -190,6 +189,22 @@ line number to the method, until C<undef> is returned:
 This module was written at Weborama when dealing with huge raw files, where huge
 means "oh no, it really won't fit anymore in this compute slot!" (which are
 limited in main-memory).
+
+=head1 BENCHMARK
+
+C<File::Sip> is not faster than in-memory parsers like L<File::Slurp::Tiny> but
+it has a lower memory footprint. With small files, it's not obvious (when the file
+is small, the cost of the index is almost equal to the cost of all the
+characters of the file).
+But when the file gets bigger, the gain in main memory grows.
+
+With files bigger than few megabytes, C<File::Sip> will consume up to 20 times less
+memory than L<File::Slurp>. This factor of 20 appears to be an asymptotic limit
+as size of studied files grows.
+
+If you want to estimate the memory size of a running process that uses C<File::Sip>, you
+can then assume that the size of the index will be around 1/20th of the size of
+the processed file.
 
 =head1 AUTHORS
 
